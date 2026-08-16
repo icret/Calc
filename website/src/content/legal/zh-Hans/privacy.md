@@ -146,7 +146,7 @@ description: 本隐私政策阐明 AuraCalc 应用在个人信息收集、使用
 
 如您对本政策有任何疑问、意见或依据第9条需行使权利，请通过以下方式与我们联系：
 
-- 电子邮件：[ispro@foxmail.com](mailto:ispro@foxmail.com)
+- 电子邮件：[lemonim@qq.com](mailto:lemonim@qq.com)
 - ICP 备案号：*（待完成 ICP 备案后填写）*
 - App 备案号：*（待完成 App 备案后填写）*
 

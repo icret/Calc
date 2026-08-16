@@ -146,7 +146,7 @@ The above API usages are all declared in the Apple Privacy Manifest (PrivacyInfo
 
 If you have any questions, comments about this Policy, or need to exercise your rights pursuant to Article 9, please contact us through:
 
-- Email: [ispro@foxmail.com](mailto:ispro@foxmail.com)
+- Email: [lemonim@qq.com](mailto:lemonim@qq.com)
 - ICP Filing Number: *(To be filled upon ICP filing completion)*
 - App Filing Number: *(To be filled upon App filing completion)*
 
