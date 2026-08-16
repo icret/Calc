@@ -28,10 +28,3 @@ export function localePath(locale: Locale, path: string = ''): string {
   return (BASE === '' ? '' : BASE) + p;
 }
 
-export function alternatePath(locale: Locale, path: string = ''): string {
-  return localePath(locale, path);
-}
-
-export function isEn(locale: Locale): boolean {
-  return locale === 'en';
-}

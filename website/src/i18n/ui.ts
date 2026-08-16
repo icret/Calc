@@ -1,6 +1,6 @@
 import { DEFAULT_LOCALE, type Locale } from './index';
 
-export const ui: Record<Locale, Record<string, string>> = {
+export const ui = {
   'zh-Hans': {
     'site.title': '灵动计算器',
     'hero.version': 'AuraCalc',
@@ -8,7 +8,7 @@ export const ui: Record<Locale, Record<string, string>> = {
     'hero.title.2': '跨端原生计算器',
     'hero.desc': '为开发者、工程师与学生设计。隐私优先，零追踪。',
     'hero.cta.primary': '免费下载',
-    'hero.cta.secondary': '了解更多',
+    'hero.cta.secondary': '产品截图',
     'hero.download.macos': 'macOS 14+ · Apple Silicon',
     'hero.download.ios': 'iOS 17+ · App Store',
     'constants.label': '高精度常数库',
@@ -56,7 +56,7 @@ export const ui: Record<Locale, Record<string, string>> = {
     'hero.title.2': 'Cross-platform Native',
     'hero.desc': 'Built for developers, engineers & students. Privacy-first, zero tracking.',
     'hero.cta.primary': 'Download Free',
-    'hero.cta.secondary': 'Learn More',
+    'hero.cta.secondary': 'Gallery',
     'hero.download.macos': 'macOS 14+ · Apple Silicon',
     'hero.download.ios': 'iOS 17+ · App Store',
     'constants.label': 'High-Precision Constants',
@@ -97,9 +97,11 @@ export const ui: Record<Locale, Record<string, string>> = {
     'legal.terms': 'Terms',
     'legal.copyright': 'Copyright © 2026 AuraCalc. All rights reserved.',
   },
-};
+} satisfies Record<Locale, Record<string, string>>;
 
-export function t(locale: Locale, key: string): string {
+export type UiKey = keyof (typeof ui)['zh-Hans'];
+
+export function t(locale: Locale, key: UiKey): string {
   return ui[locale][key] ?? ui[DEFAULT_LOCALE][key] ?? key;
 }
 

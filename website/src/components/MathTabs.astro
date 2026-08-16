@@ -36,55 +36,69 @@ const { locale } = Astro.props;
 </section>
 
 <script is:inline define:vars={{ mathTabs, locale }}>
-  const renderPanel = (panel, idx) => {
-    const items = mathTabs[idx].items;
-    panel.innerHTML = items
-      .map(
-        (c) => `
+  const initMathTabs = () => {
+    const box = document.querySelector('[data-math-tabs]');
+    if (!box) return;
+    const bar = box.querySelector('[data-math-bar]');
+    const panel = box.querySelector('[data-math-panel]');
+    if (!bar || !panel) return;
+
+    const renderPanel = (p, idx) => {
+      const items = mathTabs[idx].items;
+      p.innerHTML = items
+        .map(
+          (c) => `
       <div class="flex flex-col items-center justify-center rounded-xl border border-zinc-200/70 dark:border-zinc-800/70 bg-white/60 dark:bg-zinc-900/40 p-3.5 text-center transition-all hover:-translate-y-0.5 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-glass" title="${c.val}">
         <div class="mb-1 font-mono text-lg text-accent">${c.sym}</div>
         <div class="text-xs text-zinc-500 dark:text-zinc-400">${c.name[locale]}</div>
       </div>`,
-      )
-      .join('');
-  };
+        )
+        .join('');
+    };
 
-  const updateTabs = (bar, panel, idx) => {
-    bar.querySelectorAll('button').forEach((btn, i) => {
-      const active = i === idx;
-      btn.className = `rounded-lg px-4 py-1.5 text-xs font-medium transition-all ${active
-        ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-50 shadow-sm'
-        : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'}`;
-    });
-    panel.style.opacity = '0';
-    setTimeout(() => {
-      renderPanel(panel, idx);
-      panel.style.opacity = '1';
-    }, 200);
-  };
-
-  const box = document.querySelector('[data-math-tabs]');
-  if (box) {
-    const bar = box.querySelector('[data-math-bar]');
-    const panel = box.querySelector('[data-math-panel]');
-    if (bar && panel) {
-      panel.style.transition = 'opacity 0.35s var(--ease-apple, ease)';
-      let idx = 0;
-      renderPanel(panel, idx);
-      updateTabs(bar, panel, idx);
-      bar.querySelectorAll('button').forEach((btn, i) => {
-        btn.addEventListener('click', () => {
-          idx = i;
-          updateTabs(bar, panel, idx);
-        });
+    const updateTabs = (b, p, idx) => {
+      b.querySelectorAll('button').forEach((btn, i) => {
+        const active = i === idx;
+        btn.className = `rounded-lg px-4 py-1.5 text-xs font-medium transition-all ${active
+          ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-50 shadow-sm'
+          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'}`;
       });
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduceMotion) {
-        setInterval(() => {
-          idx = (idx + 1) % mathTabs.length;
-          updateTabs(bar, panel, idx);
-        }, 3000);
-      }
+      p.style.opacity = '0';
+      setTimeout(() => {
+        renderPanel(p, idx);
+        p.style.opacity = '1';
+      }, 200);
+    };
+
+    panel.style.transition = 'opacity 0.35s var(--ease-apple, ease)';
+    let idx = 0;
+    renderPanel(panel, idx);
+    updateTabs(bar, panel, idx);
+    bar.querySelectorAll('button').forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        idx = i;
+        updateTabs(bar, panel, idx);
+      });
+    });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      let last = performance.now();
+      let acc = 0;
+      const tick = (now) => {
+        if (!box.isConnected) return;
+        if (!document.hidden) {
+          acc += now - last;
+          if (acc >= 3000) {
+            acc = 0;
+            idx = (idx + 1) % mathTabs.length;
+            updateTabs(bar, panel, idx);
+          }
+        }
+        last = now;
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
     }
-  }
+  };
+  document.addEventListener('astro:page-load', initMathTabs);
 </script>

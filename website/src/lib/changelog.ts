@@ -73,7 +73,3 @@ export function formatDateShort(dateStr: string): string {
   return format(date, 'yyyy.MM.dd');
 }
 
-export function buildSearchText(release: Release, dateLabel: string): string {
-  const parts = release.sections.flatMap((s) => [s.title, ...s.items]);
-  return (release.version + ' ' + dateLabel + ' ' + parts.join(' ')).toLowerCase();
-}

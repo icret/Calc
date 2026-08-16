@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '~/i18n';
 import { LOCALE_HTML_LANG } from '~/i18n';
+import { ClientRouter } from 'astro:transitions';
 import BaseHead from '~/components/BaseHead.astro';
 import Header from '~/components/Header.astro';
 import Footer from '~/components/Footer.astro';
@@ -55,6 +56,7 @@ const htmlLang = LOCALE_HTML_LANG[locale];
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}
     />
+    <ClientRouter />
   </head>
   <body
     class:list={[

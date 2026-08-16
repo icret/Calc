@@ -4,8 +4,8 @@ import type { Locale } from '~/i18n';
 interface Props {
   locale: Locale;
 }
-const { locale } = Astro.props;
-const placeholder = locale === 'zh-Hans' ? '2^128, sin(pi/4), ...' : '2^128, sin(pi/4), ...';
+
+const placeholder = '2^128, sin(pi/4), ...';
 ---
 
 <div
@@ -50,20 +50,6 @@ const placeholder = locale === 'zh-Hans' ? '2^128, sin(pi/4), ...' : '2^128, sin
     ['π × 5²', '78.5398163397448'],
   ];
 
-  const evaluate = (expr: string): number | null => {
-    const safe = expr
-      .replaceAll('^', '**')
-      .replace(/\bpi\b/gi, 'Math.PI')
-      .replace(/\be\b/g, 'Math.E')
-      .replace(/\b(sin|cos|tan|sqrt|log|abs|exp|pow|floor|ceil|round)\b/g, 'Math.$1');
-    if (!/^[\d+\-*/().%|&<>\sMathPIEsincotaqrlgbxfp]+$/.test(safe)) return null;
-    try {
-      const result = Function(`"use strict"; return (${safe})`)();
-      return typeof result === 'number' && Number.isFinite(result) ? result : null;
-    } catch {
-      return null;
-    }
-  };
 
   const termOutput = document.querySelector('[data-terminal-output]') as HTMLElement | null;
   const termInput = document.querySelector('[data-terminal-input]') as HTMLInputElement | null;
@@ -138,8 +124,8 @@ const placeholder = locale === 'zh-Hans' ? '2^128, sin(pi/4), ...' : '2^128, sin
     termInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && termInput.value.trim()) {
         const expr = termInput.value.trim();
-        const result = evaluate(expr);
-        addLine(expr, result !== null ? String(result) : 'Error');
+        const found = examples.find(([ex]) => ex === expr);
+        addLine(expr, found ? found[1] : '—');
         termInput.value = '';
       }
     });

@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '~/i18n';
+import { localePath } from '~/i18n';
 import { t } from '~/i18n/ui';
 import { BASE } from '~/lib/site';
 import Terminal from './Terminal.astro';
@@ -8,6 +9,7 @@ interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
+const galleryHref = localePath(locale, '/gallery');
 ---
 
 <section class="relative mx-auto max-w-5xl px-5 sm:px-8 pt-16 sm:pt-24 pb-20">
@@ -38,36 +40,35 @@ const { locale } = Astro.props;
         {t(locale, 'hero.desc')}
       </p>
       <div class="flex gap-3" data-reveal style="--reveal-delay: 240ms;">
-        <div class="relative" data-download>
-          <button
-            type="button"
-            class="rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 shadow-[0_1px_2px_rgba(0,0,0,0.1),0_8px_24px_-6px_rgba(245,158,11,0.5)] transition-all hover:bg-amber-300 hover:shadow-[0_1px_2px_rgba(0,0,0,0.1),0_12px_32px_-8px_rgba(245,158,11,0.6)] active:bg-amber-500 active:scale-[0.98]"
-            data-download-trigger
-          >
-            <span>{t(locale, 'hero.cta.primary')}</span>
-          </button>
-          <div
-            class="absolute left-0 top-full z-10 w-56 opacity-0 pointer-events-none transition-all duration-200"
-            data-download-menu
-          >
-            <div class="mt-2 rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 p-1.5 backdrop-blur-xl backdrop-saturate-150 shadow-glass">
-              <a class="block rounded-lg px-3 py-2 transition-colors hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80" href={`${BASE}/AuraCalc-latest.dmg`} download data-platform="macos">
-                <div class="font-mono text-xs text-accent">macOS</div>
-                <div class="text-sm text-zinc-800 dark:text-zinc-200">{t(locale, 'hero.download.macos')}</div>
-              </a>
-              <a class="block rounded-lg px-3 py-2 transition-colors hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80" href="#" data-platform="ios">
-                <div class="font-mono text-xs text-accent">iOS / iPadOS</div>
-                <div class="text-sm text-zinc-800 dark:text-zinc-200">{t(locale, 'hero.download.ios')}</div>
-              </a>
-            </div>
-          </div>
-        </div>
+        <button
+          type="button"
+          popovertarget="download-menu"
+          style="anchor-name: --download-trigger;"
+          class="rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 shadow-[0_1px_2px_rgba(0,0,0,0.1),0_8px_24px_-6px_rgba(245,158,11,0.5)] transition-all hover:bg-amber-300 hover:shadow-[0_1px_2px_rgba(0,0,0,0.1),0_12px_32px_-8px_rgba(245,158,11,0.6)] active:bg-amber-500 active:scale-[0.98]"
+        >
+          <span>{t(locale, 'hero.cta.primary')}</span>
+        </button>
         <a
           class="rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/60 dark:bg-zinc-900/60 px-5 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 transition-all hover:border-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-white/80 dark:hover:bg-zinc-900/80 active:scale-[0.98] backdrop-blur-md"
-          href="#features"
+          href={galleryHref}
         >
           {t(locale, 'hero.cta.secondary')}
         </a>
+      </div>
+      <div
+        id="download-menu"
+        popover="auto"
+        style="top: anchor(--download-trigger bottom); left: anchor(--download-trigger left); margin-top: 0.5rem; width: 14rem;"
+        class="rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 p-1.5 backdrop-blur-xl backdrop-saturate-150 shadow-glass"
+      >
+        <a class="block rounded-lg px-3 py-2 transition-colors hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80" href={`${BASE}/AuraCalc-latest.dmg`} download>
+          <div class="font-mono text-xs text-accent">macOS</div>
+          <div class="text-sm text-zinc-800 dark:text-zinc-200">{t(locale, 'hero.download.macos')}</div>
+        </a>
+        <button type="button" class="block w-full text-left rounded-lg px-3 py-2 transition-colors hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80">
+          <div class="font-mono text-xs text-accent">iOS / iPadOS</div>
+          <div class="text-sm text-zinc-800 dark:text-zinc-200">{t(locale, 'hero.download.ios')}</div>
+        </button>
       </div>
     </div>
     <div class="flex items-center justify-center" data-reveal style="--reveal-delay: 320ms;">
@@ -96,26 +97,4 @@ const { locale } = Astro.props;
     }
   }
 
-  const downloadEl = document.querySelector('[data-download]');
-  if (downloadEl) {
-    const trigger = downloadEl.querySelector('[data-download-trigger]') as HTMLButtonElement;
-    const menu = downloadEl.querySelector('[data-download-menu]') as HTMLElement;
-    let hideTimer = 0;
-
-    trigger.addEventListener('click', () => {
-      window.location.href = '#';
-    });
-    downloadEl.addEventListener('mouseenter', () => {
-      clearTimeout(hideTimer);
-      menu.classList.remove('opacity-0', 'pointer-events-none');
-    });
-    downloadEl.addEventListener('mouseleave', () => {
-      hideTimer = window.setTimeout(() => menu.classList.add('opacity-0', 'pointer-events-none'), 200);
-    });
-    menu.querySelectorAll('[data-platform]').forEach((link) => {
-      if (link.getAttribute('href') === '#') {
-        link.addEventListener('click', (e) => e.preventDefault());
-      }
-    });
-  }
 </script>

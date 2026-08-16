@@ -46,7 +46,7 @@ const { locale } = Astro.props;
 
 <script>
   const updateUI = () => {
-    const api = (window as any).__auracalcTheme;
+    const api = window.__auracalcTheme;
     if (!api) return;
     const current = api.get();
     document.querySelectorAll('[data-theme-switch] [data-theme]').forEach((btn) => {
@@ -60,9 +60,10 @@ const { locale } = Astro.props;
   };
   document.querySelectorAll('[data-theme-switch] [data-theme]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const api = (window as any).__auracalcTheme;
-      if (!api) return;
-      api.set((btn as HTMLButtonElement).dataset.theme);
+      const api = window.__auracalcTheme;
+      const theme = (btn as HTMLButtonElement).dataset.theme;
+      if (!api || !theme) return;
+      api.set(theme);
       updateUI();
     });
   });
