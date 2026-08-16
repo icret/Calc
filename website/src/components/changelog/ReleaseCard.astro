@@ -1,0 +1,60 @@
+---
+import type { Release } from '~/lib/changelog';
+import { renderInline, escapeHtml, formatDate } from '~/lib/changelog';
+import type { Locale } from '~/i18n';
+import { t } from '~/i18n/ui';
+
+interface Props {
+  release: Release;
+  locale: Locale;
+}
+const { release, locale } = Astro.props;
+
+const dateLabel = formatDate(release.date, release.isUnreleased, locale, t(locale, 'changelog.unreleased'));
+const tag = release.isUnreleased ? t(locale, 'changelog.tag.unreleased') : t(locale, 'changelog.tag.stable');
+const tagClass = release.isUnreleased
+  ? 'bg-amber-400/15 text-amber-700 dark:text-amber-300'
+  : 'bg-sky-400/15 text-sky-700 dark:text-sky-300';
+const dotClass = release.isUnreleased
+  ? 'bg-amber-400 shadow-[0_0_0_4px_rgba(251,191,36,0.15)]'
+  : 'bg-zinc-300 dark:bg-zinc-700';
+---
+
+<article
+  id={release.id}
+  data-release-card
+  class="relative pl-8 pb-10 last:pb-0 scroll-mt-24 before:absolute before:left-[7px] before:top-5 before:bottom-0 before:w-px before:bg-zinc-200 dark:before:bg-zinc-800 before:content-[''] last:before:hidden"
+>
+  <div
+    class={`absolute left-0 top-1.5 h-3.5 w-3.5 rounded-full ring-4 ring-zinc-50 dark:ring-zinc-950 ${dotClass}`}
+    aria-hidden="true"
+  ></div>
+
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <h2 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        {escapeHtml(release.version)}
+      </h2>
+      <div class="mt-0.5 font-mono text-xs text-zinc-400 dark:text-zinc-600">{dateLabel}</div>
+    </div>
+    <span class={`inline-flex h-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${tagClass}`}>
+      {tag}
+    </span>
+  </div>
+
+  <div class="mt-4">
+    {release.sections.map((sec) => (
+      <div class="mt-4 first:mt-0">
+        <h3 class="mb-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100" set:html={renderInline(sec.title)} />
+        <ul class="space-y-1.5">
+          {sec.items.map((item) => (
+            <li class="flex gap-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+              <span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-amber-400/70"></span>
+              <span set:html={renderInline(item)} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</article>

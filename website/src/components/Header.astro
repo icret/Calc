@@ -1,0 +1,33 @@
+---
+import type { Locale } from '~/i18n';
+import { t } from '~/i18n/ui';
+import { localePath } from '~/i18n';
+import ThemeSwitch from './ThemeSwitch.astro';
+import LangSwitch from './LangSwitch.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+  showBack?: boolean;
+}
+const { locale, currentPath, showBack = false } = Astro.props;
+const homeHref = localePath(locale, '/');
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-zinc-200/60 dark:border-zinc-800/60 bg-zinc-50/70 dark:bg-zinc-950/70 backdrop-blur-xl backdrop-saturate-150"
+>
+  <div class="mx-auto flex max-w-5xl items-center justify-between px-5 sm:px-8 py-3.5">
+    <a class="flex items-center gap-2 font-semibold tracking-tight" href={homeHref}>
+      {showBack && (
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-accent"
+        ><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+      )}
+      <span>{t(locale, 'site.title')}</span>
+    </a>
+    <div class="flex items-center gap-2">
+      <ThemeSwitch locale={locale} />
+      <LangSwitch locale={locale} currentPath={currentPath} />
+    </div>
+  </div>
+</header>

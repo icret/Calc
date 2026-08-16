@@ -1,0 +1,64 @@
+---
+import type { Locale } from '~/i18n';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Hero from '~/components/Hero.astro';
+import { SITE, BASE } from '~/lib/site';
+import Features from '~/components/Features.astro';
+import MathTabs from '~/components/MathTabs.astro';
+import Ecosystem from '~/components/Ecosystem.astro';
+import RevealScript from '~/components/RevealScript.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const title = locale === 'zh-Hans'
+  ? '灵动计算器 · 跨端原生科学计算器'
+  : 'AuraCalc · Cross-platform Native Scientific Calculator';
+const description = locale === 'zh-Hans'
+  ? '跨端原生科学计算器 · 38 位高精度 · 隐私优先'
+  : 'Cross-platform native scientific calculator · 38-digit precision · privacy-first';
+const canonicalPath = locale === 'zh-Hans' ? '/' : '/en';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'AuraCalc',
+    alternateName: '灵动计算器',
+    url: SITE + BASE + '/',
+    inLanguage: locale === 'zh-Hans' ? 'zh-Hans' : 'en',
+    description,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'AuraCalc',
+    alternateName: '灵动计算器',
+    applicationCategory: 'CalculatorApplication',
+    operatingSystem: 'macOS, iOS, iPadOS',
+    url: SITE + BASE + '/',
+    inLanguage: locale === 'zh-Hans' ? 'zh-Hans' : 'en',
+    description,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'CNY' },
+    publisher: { '@type': 'Organization', name: 'AuraCalc', url: SITE },
+  },
+];
+---
+
+<BaseLayout
+  locale={locale}
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
+>
+  <main>
+    <Hero locale={locale} />
+    <Features locale={locale} />
+    <MathTabs locale={locale} />
+    <Ecosystem locale={locale} />
+  </main>
+  <RevealScript />
+</BaseLayout>

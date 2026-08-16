@@ -1,0 +1,121 @@
+---
+import type { Locale } from '~/i18n';
+import { t } from '~/i18n/ui';
+import { BASE } from '~/lib/site';
+import Terminal from './Terminal.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+---
+
+<section class="relative mx-auto max-w-5xl px-5 sm:px-8 pt-16 sm:pt-24 pb-20">
+  <div class="pointer-events-none absolute inset-0 -z-10 opacity-[0.5] dark:opacity-[0.35] bg-dotgrid"></div>
+  <div class="grid grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-16 items-center">
+    <div class="flex flex-col justify-center">
+      <div
+        class="mb-6 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-accent"
+        data-reveal
+        style="--reveal-delay: 0ms;"
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]"></span>
+        <span>{t(locale, 'hero.version')}</span>
+      </div>
+      <h1
+        class="mb-6 text-5xl font-bold leading-[1.05] tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl"
+        data-reveal
+        style="--reveal-delay: 80ms;"
+      >
+        <span data-count="38" class="tabular-nums">0</span><span>{t(locale, 'hero.title.suffix')}</span><br />
+        <span class="text-zinc-400 dark:text-zinc-600">{t(locale, 'hero.title.2')}</span>
+      </h1>
+      <p
+        class="mb-9 max-w-md text-lg leading-relaxed text-zinc-500 dark:text-zinc-400"
+        data-reveal
+        style="--reveal-delay: 160ms;"
+      >
+        {t(locale, 'hero.desc')}
+      </p>
+      <div class="flex gap-3" data-reveal style="--reveal-delay: 240ms;">
+        <div class="relative" data-download>
+          <button
+            type="button"
+            class="rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 shadow-[0_1px_2px_rgba(0,0,0,0.1),0_8px_24px_-6px_rgba(245,158,11,0.5)] transition-all hover:bg-amber-300 hover:shadow-[0_1px_2px_rgba(0,0,0,0.1),0_12px_32px_-8px_rgba(245,158,11,0.6)] active:bg-amber-500 active:scale-[0.98]"
+            data-download-trigger
+          >
+            <span>{t(locale, 'hero.cta.primary')}</span>
+          </button>
+          <div
+            class="absolute left-0 top-full z-10 w-56 opacity-0 pointer-events-none transition-all duration-200"
+            data-download-menu
+          >
+            <div class="mt-2 rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 p-1.5 backdrop-blur-xl backdrop-saturate-150 shadow-glass">
+              <a class="block rounded-lg px-3 py-2 transition-colors hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80" href={`${BASE}/AuraCalc-latest.dmg`} download data-platform="macos">
+                <div class="font-mono text-xs text-accent">macOS</div>
+                <div class="text-sm text-zinc-800 dark:text-zinc-200">{t(locale, 'hero.download.macos')}</div>
+              </a>
+              <a class="block rounded-lg px-3 py-2 transition-colors hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80" href="#" data-platform="ios">
+                <div class="font-mono text-xs text-accent">iOS / iPadOS</div>
+                <div class="text-sm text-zinc-800 dark:text-zinc-200">{t(locale, 'hero.download.ios')}</div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <a
+          class="rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/60 dark:bg-zinc-900/60 px-5 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 transition-all hover:border-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-white/80 dark:hover:bg-zinc-900/80 active:scale-[0.98] backdrop-blur-md"
+          href="#features"
+        >
+          {t(locale, 'hero.cta.secondary')}
+        </a>
+      </div>
+    </div>
+    <div class="flex items-center justify-center" data-reveal style="--reveal-delay: 320ms;">
+      <Terminal locale={locale} />
+    </div>
+  </div>
+</section>
+
+<script>
+  const countEl = document.querySelector('[data-count]');
+  if (countEl) {
+    const target = parseInt((countEl as HTMLElement).dataset.count ?? '0', 10);
+    const width = String(target).length;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      countEl.textContent = String(target).padStart(width, '0');
+    } else {
+      const start = performance.now();
+      const duration = 1500;
+      const tick = (now: number) => {
+        const progress = Math.min((now - start) / duration, 1);
+        countEl.textContent = String(Math.floor(progress * target)).padStart(width, '0');
+        if (progress < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+  }
+
+  const downloadEl = document.querySelector('[data-download]');
+  if (downloadEl) {
+    const trigger = downloadEl.querySelector('[data-download-trigger]') as HTMLButtonElement;
+    const menu = downloadEl.querySelector('[data-download-menu]') as HTMLElement;
+    let hideTimer = 0;
+
+    trigger.addEventListener('click', () => {
+      window.location.href = '#';
+    });
+    downloadEl.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimer);
+      menu.classList.remove('opacity-0', 'pointer-events-none');
+    });
+    downloadEl.addEventListener('mouseleave', () => {
+      hideTimer = window.setTimeout(() => menu.classList.add('opacity-0', 'pointer-events-none'), 200);
+    });
+    menu.querySelectorAll('[data-platform]').forEach((link) => {
+      if (link.getAttribute('href') === '#') {
+        link.addEventListener('click', (e) => e.preventDefault());
+      }
+    });
+  }
+</script>

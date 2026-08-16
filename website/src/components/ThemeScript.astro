@@ -1,0 +1,22 @@
+---
+---
+<script is:inline define:vars={{}}>
+  (() => {
+    const KEY = 'auracalc-theme';
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    let current = localStorage.getItem(KEY) ?? 'system';
+    const apply = (mode) => {
+      root.classList.toggle('dark', mode === 'system' ? media.matches : mode === 'dark');
+    };
+    apply(current);
+    window.__auracalcTheme = {
+      get: () => current,
+      set: (mode) => {
+        current = mode;
+        localStorage.setItem(KEY, mode);
+        apply(mode);
+      },
+    };
+  })();
+</script>

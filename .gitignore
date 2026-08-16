@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# IDE
+.codeartsdoer/
+.vscode/
+.idea/
+
+# Astro
+website/.astro/
+website/dist/
+website/node_modules/
+
+# 二进制安装包（保留 AuraCalc-latest.dmg，其余临时 dmg 忽略）
+website/public/*.dmg
+!website/public/AuraCalc-latest.dmg
+
+# 日志
+*.log
+npm-debug.log*
+pnpm-debug.log*

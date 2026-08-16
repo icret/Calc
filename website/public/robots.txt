@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://icret.github.io/Calc/sitemap-index.xml

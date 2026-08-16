@@ -1,0 +1,99 @@
+---
+import type { Locale } from '~/i18n';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { t } from '~/i18n/ui';
+import { localePath } from '~/i18n';
+import { SITE, BASE, pageUrl } from '~/lib/site';
+import { format, parseISO } from 'date-fns';
+
+interface Props {
+  locale: Locale;
+  slug: 'privacy' | 'terms';
+}
+const { locale, slug } = Astro.props;
+
+const entry = (await getCollection('legal', (e) => e.data.locale === locale && e.data.slug === slug))[0];
+if (!entry) throw new Error(`Legal entry not found: ${locale}/${slug}`);
+
+const { Content } = await render(entry);
+const { title, version, effectiveDate, description } = entry.data;
+
+const canonicalPath = locale === 'zh-Hans' ? `/${slug}` : `/en/${slug}`;
+const homeHref = localePath(locale, '/');
+const otherSlug: 'privacy' | 'terms' = slug === 'privacy' ? 'terms' : 'privacy';
+const otherHref = localePath(locale, `/${otherSlug}`);
+const otherLabel = t(locale, `legal.${otherSlug}`);
+
+const effDate = parseISO(effectiveDate);
+const dateLabel = locale === 'zh-Hans'
+  ? `版本号：${version} | 生效日期：${format(effDate, 'yyyy年MM月dd日')}`
+  : `Version: ${version} | Effective Date: ${format(effDate, 'MMMM d, yyyy')}`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'LegalDocument',
+    headline: title,
+    name: `AuraCalc ${title}`,
+    inLanguage: locale === 'zh-Hans' ? 'zh-Hans' : 'en',
+    datePublished: effectiveDate,
+    dateModified: effectiveDate,
+    version,
+    publisher: { '@type': 'Organization', name: 'AuraCalc', url: SITE },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl(canonicalPath) },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: locale === 'zh-Hans' ? '首页' : 'Home', item: SITE + BASE + '/' },
+      { '@type': 'ListItem', position: 2, name: title, item: pageUrl(canonicalPath) },
+    ],
+  },
+];
+
+const pageTitle = `${title} - AuraCalc`;
+---
+
+<BaseLayout
+  locale={locale}
+  title={pageTitle}
+  description={description}
+  canonicalPath={canonicalPath}
+  ogType="article"
+  jsonLd={jsonLd}
+  publishedTime={`${effectiveDate}T00:00:00+08:00`}
+  modifiedTime={`${effectiveDate}T00:00:00+08:00`}
+  showHeader={false}
+  showFooter={false}
+>
+  <nav class="mx-auto max-w-3xl px-6 pt-8 flex items-center justify-between text-sm" aria-label="Breadcrumb">
+    <a href={homeHref} class="inline-flex items-center gap-1.5 text-zinc-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"
+      ><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+      <span>{t(locale, 'legal.back')}</span>
+    </a>
+    <div class="flex items-center gap-5">
+      <a href={otherHref} class="text-zinc-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">{otherLabel}</a>
+      <a
+        href={localePath(locale === 'zh-Hans' ? 'en' : 'zh-Hans', `/${slug}`)}
+        class="text-zinc-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+      >
+        {locale === 'zh-Hans' ? 'EN' : '中文'}
+      </a>
+    </div>
+  </nav>
+  <main class="mx-auto max-w-3xl px-6 py-16">
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold text-zinc-900 dark:text-zinc-50">{title}</h1>
+      <p class="mt-2 text-sm text-zinc-500">{dateLabel}</p>
+    </header>
+    <article class="legal-content rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 p-8">
+      <div class="space-y-6">
+        <Content />
+      </div>
+    </article>
+    <p class="mt-8 text-center text-sm text-zinc-500">{t(locale, 'legal.copyright')}</p>
+  </main>
+</BaseLayout>
