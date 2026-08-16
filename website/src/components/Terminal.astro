@@ -50,11 +50,16 @@ const placeholder = '2^128, sin(pi/4), ...';
     ['π × 5²', '78.5398163397448'],
   ];
 
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let activeToken = 0;
 
-  const termOutput = document.querySelector('[data-terminal-output]') as HTMLElement | null;
-  const termInput = document.querySelector('[data-terminal-input]') as HTMLInputElement | null;
+  const initTerminal = () => {
+    const myToken = ++activeToken;
+    const isStale = () => myToken !== activeToken;
+    const termOutput = document.querySelector('[data-terminal-output]') as HTMLElement | null;
+    const termInput = document.querySelector('[data-terminal-input]') as HTMLInputElement | null;
+    if (!termOutput || !termInput) return;
 
-  if (termOutput && termInput) {
     const scrollToBottom = () => {
       termOutput.scrollTop = termOutput.scrollHeight;
     };
@@ -79,7 +84,6 @@ const placeholder = '2^128, sin(pi/4), ...';
 
     let typewriterActive = true;
     let typewriterIndex = 0;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const typewriter = async () => {
       if (reduceMotion) {
@@ -88,7 +92,7 @@ const placeholder = '2^128, sin(pi/4), ...';
         }
         return;
       }
-      while (typewriterActive) {
+      while (typewriterActive && !isStale()) {
         const [expr, result] = examples[typewriterIndex % examples.length];
         const line = document.createElement('div');
         const inputLine = document.createElement('div');
@@ -104,7 +108,7 @@ const placeholder = '2^128, sin(pi/4), ...';
         }
         scrollToBottom();
         for (const char of expr) {
-          if (!typewriterActive) return;
+          if (!typewriterActive || isStale()) return;
           inputLine.textContent += char;
           await sleep(80);
         }
@@ -131,5 +135,6 @@ const placeholder = '2^128, sin(pi/4), ...';
     });
 
     typewriter();
-  }
+  };
+  document.addEventListener('astro:page-load', initTerminal);
 </script>

@@ -78,23 +78,24 @@ const galleryHref = localePath(locale, '/gallery');
 </section>
 
 <script>
-  const countEl = document.querySelector('[data-count]');
-  if (countEl) {
+  const initCount = () => {
+    const countEl = document.querySelector('[data-count]');
+    if (!countEl) return;
     const target = parseInt((countEl as HTMLElement).dataset.count ?? '0', 10);
     const width = String(target).length;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) {
       countEl.textContent = String(target).padStart(width, '0');
-    } else {
-      const start = performance.now();
-      const duration = 1500;
-      const tick = (now: number) => {
-        const progress = Math.min((now - start) / duration, 1);
-        countEl.textContent = String(Math.floor(progress * target)).padStart(width, '0');
-        if (progress < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
+      return;
     }
-  }
-
+    const start = performance.now();
+    const duration = 1500;
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      countEl.textContent = String(Math.floor(progress * target)).padStart(width, '0');
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  document.addEventListener('astro:page-load', initCount);
 </script>

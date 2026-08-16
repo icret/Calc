@@ -152,5 +152,5 @@ const jsonLd = [
     cards.forEach((card) => observer.observe(card));
   };
 
-  observeActiveVersion();
+  document.addEventListener('astro:page-load', observeActiveVersion);
 </script>

@@ -13,6 +13,7 @@ interface Props {
   jsonLd?: object | object[];
   publishedTime?: string;
   modifiedTime?: string;
+  skipLangDetect?: boolean;
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   jsonLd,
   publishedTime,
   modifiedTime,
+  skipLangDetect = false,
 } = Astro.props;
 
 import { SITE, BASE, pageUrl } from '~/lib/site';
@@ -68,3 +70,19 @@ const alternates = alternatePaths ?? {
 ))}
 
 <ThemeScript />
+
+{locale === 'zh-Hans' && !skipLangDetect && (
+  <script is:inline define:vars={{ enHref: alternates['en'] }}>
+    (function () {
+      try {
+        if (localStorage.getItem('lang-pref')) return;
+        var langs = navigator.languages || [navigator.language || ''];
+        var isZh = false;
+        for (var i = 0; i < langs.length; i++) {
+          if (langs[i] && langs[i].toLowerCase().indexOf('zh') === 0) { isZh = true; break; }
+        }
+        if (!isZh) location.replace(enHref);
+      } catch (e) {}
+    })();
+  </script>
+)}

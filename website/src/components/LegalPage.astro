@@ -78,6 +78,7 @@ const pageTitle = `${title} - AuraCalc`;
       <a href={otherHref} class="text-zinc-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">{otherLabel}</a>
       <a
         href={localePath(locale === 'zh-Hans' ? 'en' : 'zh-Hans', `/${slug}`)}
+        data-lang-target={locale === 'zh-Hans' ? 'en' : 'zh-Hans'}
         class="text-zinc-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
       >
         {locale === 'zh-Hans' ? 'EN' : '中文'}

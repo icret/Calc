@@ -4,7 +4,7 @@ import { BASE } from '~/lib/site';
 import { t } from '~/i18n/ui';
 ---
 
-<BaseLayout locale="zh-Hans" title="404 · AuraCalc" description="404" canonicalPath="/404" showHeader={false} showFooter={false}>
+<BaseLayout locale="zh-Hans" title="404 · AuraCalc" description="404" canonicalPath="/404" showHeader={false} showFooter={false} skipLangDetect={true}>
   <main class="mx-auto max-w-3xl px-6 py-32 text-center">
     <div class="font-mono text-6xl font-bold text-accent">404</div>
     <p class="mt-4 text-zinc-500" data-i18n="notFound">{t('zh-Hans', 'error.notFound')}</p>

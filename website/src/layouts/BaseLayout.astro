@@ -21,6 +21,7 @@ interface Props {
   showFooter?: boolean;
   showBack?: boolean;
   containerClass?: string;
+  skipLangDetect?: boolean;
 }
 
 const {
@@ -37,6 +38,7 @@ const {
   showFooter = true,
   showBack = false,
   containerClass = '',
+  skipLangDetect = false,
 } = Astro.props;
 
 const htmlLang = LOCALE_HTML_LANG[locale];
@@ -55,6 +57,7 @@ const htmlLang = LOCALE_HTML_LANG[locale];
       jsonLd={jsonLd}
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}
+      skipLangDetect={skipLangDetect}
     />
     <ClientRouter />
   </head>
@@ -71,5 +74,16 @@ const htmlLang = LOCALE_HTML_LANG[locale];
     {showHeader && <Header locale={locale} currentPath={canonicalPath} showBack={showBack} />}
     <slot />
     {showFooter && <Footer locale={locale} />}
+    <script>
+      document.addEventListener('click', (e) => {
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        const el = e.target instanceof Element ? e.target.closest('[data-lang-target]') : null;
+        if (!el) return;
+        const lang = el.getAttribute('data-lang-target');
+        if (lang) {
+          try { localStorage.setItem('lang-pref', lang); } catch {}
+        }
+      });
+    </script>
   </body>
 </html>

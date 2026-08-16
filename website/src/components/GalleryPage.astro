@@ -115,24 +115,27 @@ const jsonLd = [
 </BaseLayout>
 
 <script>
-  const dialog = document.getElementById('gallery-lightbox') as HTMLDialogElement | null;
-  const lightboxImg = document.querySelector('[data-lightbox-img]') as HTMLImageElement | null;
-  const lightboxCaption = document.querySelector('[data-lightbox-caption]') as HTMLElement | null;
+  const initGallery = () => {
+    const dialog = document.getElementById('gallery-lightbox') as HTMLDialogElement | null;
+    const lightboxImg = document.querySelector('[data-lightbox-img]') as HTMLImageElement | null;
+    const lightboxCaption = document.querySelector('[data-lightbox-caption]') as HTMLElement | null;
 
-  if (dialog && lightboxImg && lightboxCaption) {
-    document.querySelectorAll('[data-gallery-trigger]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const el = btn as HTMLElement;
-        lightboxImg.src = el.dataset.fullSrc ?? '';
-        lightboxImg.alt = el.getAttribute('aria-label') ?? '';
-        lightboxCaption.textContent = el.dataset.caption ?? '';
-        dialog.showModal();
+    if (dialog && lightboxImg && lightboxCaption) {
+      document.querySelectorAll('[data-gallery-trigger]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const el = btn as HTMLElement;
+          lightboxImg.src = el.dataset.fullSrc ?? '';
+          lightboxImg.alt = el.getAttribute('aria-label') ?? '';
+          lightboxCaption.textContent = el.dataset.caption ?? '';
+          dialog.showModal();
+        });
       });
-    });
 
-    document.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
-    dialog.addEventListener('click', (e) => {
-      if (e.target === dialog) dialog.close();
-    });
-  }
+      document.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+    }
+  };
+  document.addEventListener('astro:page-load', initGallery);
 </script>
