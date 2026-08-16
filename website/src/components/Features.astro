@@ -1,0 +1,27 @@
+---
+import type { Locale } from '~/i18n';
+import { features } from '~/data/features';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+---
+
+<section id="features" class="mx-auto max-w-5xl px-5 sm:px-8 py-16 sm:py-20">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {features.map((f, i) => (
+      <div
+        class="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/60 dark:bg-zinc-900/40 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-lift"
+        data-reveal
+        style={`--reveal-delay: ${i * 60}ms;`}
+      >
+        <div class="mb-4 font-mono text-xs tracking-widest text-accent">
+          {String(i + 1).padStart(2, '0')}
+        </div>
+        <h3 class="mb-1.5 font-semibold text-zinc-900 dark:text-zinc-100">{f.title[locale]}</h3>
+        <p class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{f.desc[locale]}</p>
+      </div>
+    ))}
+  </div>
+</section>

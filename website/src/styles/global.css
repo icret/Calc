@@ -1,0 +1,200 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, monospace;
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-glass: 0 1px 1px rgba(0, 0, 0, 0.04), 0 4px 16px -4px rgba(0, 0, 0, 0.08),
+    0 24px 48px -16px rgba(0, 0, 0, 0.12);
+  --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -6px rgba(0, 0, 0, 0.12),
+    0 32px 64px -24px rgba(0, 0, 0, 0.16);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --dot-color: rgba(0, 0, 0, 0.04);
+  }
+  .dark {
+    color-scheme: dark;
+    --shadow-glass: 0 1px 1px rgba(0, 0, 0, 0.2), 0 4px 16px -4px rgba(0, 0, 0, 0.4),
+      0 24px 48px -16px rgba(0, 0, 0, 0.6);
+    --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px -6px rgba(0, 0, 0, 0.4),
+      0 32px 64px -24px rgba(0, 0, 0, 0.6);
+    --dot-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+@utility text-accent {
+  @apply text-amber-600 dark:text-amber-400;
+}
+
+@utility bg-dotgrid {
+  background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, black, transparent 80%);
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent 80%);
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity 0.7s var(--ease-apple),
+    transform 0.7s var(--ease-apple);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+[data-reveal].reveal-in {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+[data-terminal-output]::-webkit-scrollbar {
+  width: 6px;
+}
+[data-terminal-output]::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-terminal-output]::-webkit-scrollbar-thumb {
+  background: var(--color-zinc-300);
+  border-radius: 3px;
+}
+[data-terminal-output]::-webkit-scrollbar-thumb:hover {
+  background: var(--color-zinc-400);
+}
+[data-terminal-output] {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-zinc-300) transparent;
+}
+.dark [data-terminal-output]::-webkit-scrollbar-thumb {
+  background: var(--color-zinc-700);
+}
+.dark [data-terminal-output]::-webkit-scrollbar-thumb:hover {
+  background: var(--color-zinc-600);
+}
+.dark [data-terminal-output] {
+  scrollbar-color: var(--color-zinc-700) transparent;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-amber-400);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.version-link[aria-current='true'] {
+  @apply bg-amber-400/15 text-zinc-900 dark:text-zinc-50;
+}
+.version-link[aria-current='true'] .version-dot {
+  @apply border-amber-500 bg-amber-500 dark:border-amber-400 dark:bg-amber-400;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.legal-content h2 {
+  @apply mb-4 mt-8 border-l-2 border-amber-500 pl-3 text-lg font-semibold text-zinc-900;
+}
+.dark .legal-content h2 {
+  @apply border-amber-400 text-zinc-100;
+}
+.legal-content h2:first-child {
+  @apply mt-0;
+}
+.legal-content h3,
+.legal-content h4 {
+  @apply mb-2 mt-5 font-semibold text-zinc-900;
+}
+.dark .legal-content h3,
+.dark .legal-content h4 {
+  @apply text-zinc-100;
+}
+.legal-content p {
+  @apply leading-relaxed text-zinc-700;
+}
+.dark .legal-content p {
+  @apply text-zinc-300;
+}
+.legal-content strong {
+  @apply font-semibold text-zinc-900;
+}
+.dark .legal-content strong {
+  @apply text-zinc-100;
+}
+.legal-content em {
+  @apply text-zinc-500;
+}
+.legal-content code {
+  @apply rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-amber-600;
+}
+.dark .legal-content code {
+  @apply bg-zinc-800/50 text-amber-400;
+}
+.legal-content a {
+  @apply text-amber-600 underline transition-colors hover:text-amber-700;
+}
+.dark .legal-content a {
+  @apply text-amber-400 hover:text-amber-300;
+}
+.legal-content ul {
+  @apply my-2 list-disc space-y-1 pl-6 leading-relaxed text-zinc-700;
+}
+.dark .legal-content ul {
+  @apply text-zinc-300;
+}
+.legal-content table {
+  @apply my-3 border-collapse text-sm;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.legal-content th {
+  @apply border border-zinc-200 bg-zinc-100 px-3 py-2 text-left align-top font-medium text-zinc-900;
+}
+.dark .legal-content th {
+  @apply border-zinc-800 bg-zinc-800/50 text-zinc-100;
+}
+.legal-content td {
+  @apply border border-zinc-200 px-3 py-2 text-left align-top text-zinc-700;
+}
+.dark .legal-content td {
+  @apply border-zinc-800 text-zinc-300;
+}
+.legal-content tbody tr:nth-child(odd) {
+  @apply bg-zinc-50;
+}
+.dark .legal-content tbody tr:nth-child(odd) {
+  @apply bg-zinc-900/30;
+}
+.legal-content tbody tr:hover {
+  @apply bg-zinc-100;
+}
+.dark .legal-content tbody tr:hover {
+  @apply bg-zinc-800/40;
+}
+.legal-content blockquote {
+  @apply my-4 flex gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-900;
+}
+.dark .legal-content blockquote {
+  @apply border-amber-400/30 bg-amber-400/10 text-amber-100/90;
+}
+.legal-content hr {
+  @apply my-6 border-zinc-200;
+}
+.dark .legal-content hr {
+  @apply border-zinc-800;
+}

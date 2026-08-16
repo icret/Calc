@@ -1,0 +1,22 @@
+---
+import type { Locale } from '~/i18n';
+import { t } from '~/i18n/ui';
+import { localePath } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+const { locale, currentPath } = Astro.props;
+const nextLocale: Locale = locale === 'zh-Hans' ? 'en' : 'zh-Hans';
+const targetPath = currentPath.replace(/^\/en/, '');
+const href = localePath(nextLocale, targetPath);
+---
+
+<a
+  class="rounded-lg border border-zinc-200/80 dark:border-zinc-800/80 bg-white/60 dark:bg-zinc-900/60 px-2.5 py-1 text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors hover:border-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 backdrop-blur-md"
+  href={href}
+  aria-label={locale === 'zh-Hans' ? 'Switch to English' : '切换到中文'}
+>
+  {t(locale, 'lang.switch')}
+</a>

@@ -1,0 +1,39 @@
+---
+import type { Release } from '~/lib/changelog';
+import { formatDateShort, escapeHtml } from '~/lib/changelog';
+import type { Locale } from '~/i18n';
+import { t } from '~/i18n/ui';
+
+interface Props {
+  releases: Release[];
+  locale: Locale;
+}
+const { releases, locale } = Astro.props;
+---
+
+<aside class="hidden lg:block" aria-label={t(locale, 'changelog.timeline')}>
+  <nav
+    class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/60 dark:bg-zinc-900/40 p-3 backdrop-blur-md shadow-glass"
+    data-version-nav
+  >
+    <div class="mb-3 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-zinc-400 dark:text-zinc-600">
+      {t(locale, 'changelog.timeline')}
+    </div>
+    <div class="relative grid gap-1">
+      {releases.map((r) => {
+        const dateLabel = r.isUnreleased ? t(locale, 'changelog.unreleased') : formatDateShort(r.date);
+        return (
+          <a
+            href={`#${r.id}`}
+            class="version-link group relative grid gap-0.5 rounded-lg px-2 py-1.5 pl-6 text-zinc-500 dark:text-zinc-400 transition-colors hover:bg-amber-400/10 hover:text-zinc-900 dark:hover:text-zinc-100"
+            data-version-link={r.id}
+          >
+            <span class="version-dot absolute left-2 top-3.5 h-1.5 w-1.5 rounded-full border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 transition-colors"></span>
+            <span class="text-xs font-semibold leading-tight">{escapeHtml(r.version)}</span>
+            <span class="text-[0.7rem] leading-tight text-zinc-400 dark:text-zinc-600">{dateLabel}</span>
+          </a>
+        );
+      })}
+    </div>
+  </nav>
+</aside>

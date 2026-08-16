@@ -1,0 +1,73 @@
+---
+import type { Locale } from '~/i18n';
+import { LOCALE_HTML_LANG } from '~/i18n';
+import BaseHead from '~/components/BaseHead.astro';
+import Header from '~/components/Header.astro';
+import Footer from '~/components/Footer.astro';
+import '~/styles/global.css';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  canonicalPath: string;
+  alternatePaths?: Partial<Record<Locale, string>>;
+  ogType?: 'website' | 'article';
+  jsonLd?: object | object[];
+  publishedTime?: string;
+  modifiedTime?: string;
+  showHeader?: boolean;
+  showFooter?: boolean;
+  showBack?: boolean;
+  containerClass?: string;
+}
+
+const {
+  locale,
+  title,
+  description,
+  canonicalPath,
+  alternatePaths,
+  ogType,
+  jsonLd,
+  publishedTime,
+  modifiedTime,
+  showHeader = true,
+  showFooter = true,
+  showBack = false,
+  containerClass = '',
+} = Astro.props;
+
+const htmlLang = LOCALE_HTML_LANG[locale];
+---
+
+<!doctype html>
+<html class="scroll-smooth" lang={htmlLang}>
+  <head>
+    <BaseHead
+      locale={locale}
+      title={title}
+      description={description}
+      canonicalPath={canonicalPath}
+      alternatePaths={alternatePaths}
+      ogType={ogType}
+      jsonLd={jsonLd}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+    />
+  </head>
+  <body
+    class:list={[
+      'bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 antialiased selection:bg-amber-200 selection:text-zinc-900 dark:selection:bg-amber-400/30 dark:selection:text-amber-100 font-sans',
+      containerClass,
+    ]}
+  >
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div class="absolute -top-32 left-1/2 h-[480px] w-[820px] -translate-x-1/2 rounded-full bg-linear-to-b from-amber-200/40 to-transparent blur-3xl dark:from-amber-500/10"></div>
+      <div class="absolute bottom-0 right-0 h-[360px] w-[360px] rounded-full bg-linear-to-tr from-sky-200/30 to-transparent blur-3xl dark:from-sky-500/5"></div>
+    </div>
+    {showHeader && <Header locale={locale} currentPath={canonicalPath} showBack={showBack} />}
+    <slot />
+    {showFooter && <Footer locale={locale} />}
+  </body>
+</html>

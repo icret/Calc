@@ -1,0 +1,31 @@
+---
+import type { Locale } from '~/i18n';
+import { t } from '~/i18n/ui';
+import { localePath } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+  showChangelog?: boolean;
+}
+const { locale, showChangelog = true } = Astro.props;
+const galleryHref = localePath(locale, '/gallery');
+const changelogHref = localePath(locale, '/changelog');
+const privacyHref = localePath(locale, '/privacy');
+const termsHref = localePath(locale, '/terms');
+---
+
+<footer class="border-t border-zinc-200/60 dark:border-zinc-800/60">
+  <div class="mx-auto flex max-w-5xl flex-col items-center gap-2 px-5 py-5 text-xs text-zinc-500 sm:flex-row sm:justify-between sm:px-8">
+    <div class="font-mono">&copy; <span id="year">2026</span> AuraCalc</div>
+    <div class="flex gap-4 font-mono">
+      {showChangelog && <a href={galleryHref} class="transition-colors hover:text-accent">{t(locale, 'footer.gallery')}</a>}
+      {showChangelog && <a href={changelogHref} class="transition-colors hover:text-accent">{t(locale, 'footer.changelog')}</a>}
+      <a href={privacyHref} class="transition-colors hover:text-accent">{t(locale, 'footer.privacyPolicy')}</a>
+      <a href={termsHref} class="transition-colors hover:text-accent">{t(locale, 'footer.terms')}</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year')!.textContent = String(new Date().getFullYear());
+</script>
