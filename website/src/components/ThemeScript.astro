@@ -1,6 +1,6 @@
 ---
 ---
-<script is:inline define:vars={{}}>
+<script is:inline>
   (() => {
     const KEY = 'auracalc-theme';
     const root = document.documentElement;
@@ -10,6 +10,9 @@
       root.classList.toggle('dark', mode === 'system' ? media.matches : mode === 'dark');
     };
     apply(current);
+    media.addEventListener('change', () => {
+      if (current === 'system') apply('system');
+    });
     window.__auracalcTheme = {
       get: () => current,
       set: (mode) => {

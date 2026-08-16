@@ -13,7 +13,7 @@
 **Do not report security vulnerabilities through public Issues or Pull Requests.**
 Please use one of the following private channels instead:
 
-- GitHub Security Advisory: [Create a private advisory](https://github.com/icret/Calc/security/advisories/new) (preferred)
+- GitHub Security Advisory: [Create a private advisory](https://github.com/icret/AuraCalc-Free/security/advisories/new) (preferred)
 - Email: thetopuser@gmail.com
 
 When reporting, please include:

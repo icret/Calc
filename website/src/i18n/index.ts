@@ -1,7 +1,6 @@
 export type Locale = 'zh-Hans' | 'en';
 
 export const DEFAULT_LOCALE: Locale = 'zh-Hans';
-export const LOCALES: Locale[] = ['zh-Hans', 'en'];
 
 export const LOCALE_HTML_LANG: Record<Locale, string> = {
   'zh-Hans': 'zh-Hans',
@@ -27,4 +26,3 @@ export function localePath(locale: Locale, path: string = ''): string {
   if (!p.endsWith('/')) p += '/';
   return (BASE === '' ? '' : BASE) + p;
 }
-

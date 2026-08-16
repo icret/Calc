@@ -6,7 +6,7 @@ const SITE = 'https://icret.github.io';
 
 export default defineConfig({
   site: SITE,
-  base: '/Calc',
+  base: '/AuraCalc-Free',
   output: 'static',
   trailingSlash: 'always',
   i18n: {

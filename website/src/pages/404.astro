@@ -1,16 +1,31 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import { BASE } from '~/lib/site';
+import { t } from '~/i18n/ui';
 ---
 
-<BaseLayout locale="zh-Hans" title="404 · AuraCalc" description="页面未找到" canonicalPath="/404" showHeader={false} showFooter={false}>
+<BaseLayout locale="zh-Hans" title="404 · AuraCalc" description="404" canonicalPath="/404" showHeader={false} showFooter={false}>
   <main class="mx-auto max-w-3xl px-6 py-32 text-center">
     <div class="font-mono text-6xl font-bold text-accent">404</div>
-    <p class="mt-4 text-zinc-500">页面未找到</p>
+    <p class="mt-4 text-zinc-500" data-i18n="notFound">{t('zh-Hans', 'error.notFound')}</p>
     <a href={(BASE || '') + '/'} class="mt-8 inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 hover:underline">
       <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"
       ><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-      返回首页
+      <span data-i18n="backHome">{t('zh-Hans', 'error.backHome')}</span>
     </a>
   </main>
 </BaseLayout>
+
+<script>
+  const i18n = {
+    notFound: { 'zh-Hans': '页面未找到', en: 'Page not found' },
+    backHome: { 'zh-Hans': '返回首页', en: 'Back to home' },
+  };
+  const isEn = location.pathname.includes('/en/');
+  const locale = isEn ? 'en' : 'zh-Hans';
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    const key = (el as HTMLElement).dataset.i18n as keyof typeof i18n;
+    if (i18n[key]) el.textContent = i18n[key][locale];
+  });
+  if (isEn) document.documentElement.lang = 'en';
+</script>

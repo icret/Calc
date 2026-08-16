@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://icret.github.io/Calc/sitemap-index.xml
+Sitemap: https://icret.github.io/AuraCalc-Free/sitemap-index.xml
